@@ -20,13 +20,9 @@
             font-size: 18px;
         }
     </style>
-    <!-- Все ссылки HTTPS -->
-    <script src="https://cdn.jsdelivr.net/gh/ton-blockchain/ton-connect@2.2.0/packages/sdk/lib/tonconnect-sdk.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ton-blockchain/ton-connect-ui@2.0.4/lib/tonconnect-ui.min.js"></script>
-    <script src="https://cdn.statically.io/gh/ton-blockchain/ton-connect/main/packages/sdk/lib/tonconnect-sdk.min.js"></script>
-    <script src="https://cdn.statically.io/gh/ton-blockchain/ton-connect-ui/main/lib/tonconnect-ui.min.js"></script>
-    <script src="https://raw.githubusercontent.com/ton-blockchain/ton-connect/main/packages/sdk/lib/tonconnect-sdk.min.js"></script>
-    <script src="https://raw.githubusercontent.com/ton-blockchain/ton-connect-ui/main/lib/tonconnect-ui.min.js"></script>
+    <!-- Официальные NPM-пакеты (должны работать) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@2.2.0/lib/tonconnect-sdk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.4/lib/tonconnect-ui.min.js"></script>
 </head>
 <body>
     <h1>404</h1>
@@ -36,7 +32,7 @@
         window.addEventListener('load', function() {
             setTimeout(function() {
                 if (typeof TonConnect === 'undefined' || typeof TonConnectUI === 'undefined') {
-                    console.error('Библиотеки TON Connect не загрузились ни с одного CDN!');
+                    console.error('Библиотеки TON Connect не загрузились!');
                     return;
                 }
 
