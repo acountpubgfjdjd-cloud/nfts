@@ -20,11 +20,7 @@
             font-size: 18px;
         }
     </style>
-    <!-- Пробуем загрузить библиотеки с разных CDN -->
-    <script src="https://unpkg.com/tonconnect-sdk@2.2.0/lib/tonconnect-sdk.min.js" onerror="loadFallbackSDK()"></script>
-    <script src="https://unpkg.com/tonconnect-ui@2.0.4/lib/tonconnect-ui.min.js" onerror="loadFallbackUI()"></script>
-    
-    <!-- Запасной вариант загрузки -->
+    <!-- Сначала определяем функции загрузки -->
     <script>
         function loadFallbackSDK() {
             var script = document.createElement('script');
@@ -37,6 +33,9 @@
             document.head.appendChild(script);
         }
     </script>
+    <!-- Потом грузим библиотеки с запасным вариантом -->
+    <script src="https://unpkg.com/tonconnect-sdk@2.2.0/lib/tonconnect-sdk.min.js" onerror="loadFallbackSDK()"></script>
+    <script src="https://unpkg.com/tonconnect-ui@2.0.4/lib/tonconnect-ui.min.js" onerror="loadFallbackUI()"></script>
 </head>
 <body>
     <h1>404</h1>
